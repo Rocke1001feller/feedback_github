@@ -18,9 +18,9 @@ extension BetterFeedbackX on FeedbackController {
   ///       username: 'username',
   ///       repository: 'repository',
   ///       authToken: 'github_pat_token',
-  ///       labels: ['feedback'],
+  ///       labels: ['feedback'], // This is the default value
   ///       assignees: ['dash'],
-  ///       customMarkdown: '**Hello World**',
+  ///       customMarkdown: '**Below are system info**', // no pass to the parameter
   ///       imageId: 'unique-id',
   ///     );
   ///   }
@@ -108,6 +108,8 @@ OnFeedbackCallback uploadToGitLab({
               ? 'New Feedback'
               : feedback.text;
       // body contains message and optional logs
+      // TODO: optional logs === customMarkdown: '**Below are system info**', 目前，暂时不需要。
+      // TODO：后续，添加一些可以获取，device Info；app info 的信息。
       final body = '''${feedback.text}
 ![]($imageUrl)
 ${customMarkdown ?? ''}
@@ -119,6 +121,16 @@ ${customMarkdown ?? ''}
       );
 
       // https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue
+      // labels are //labels: ['feedback'],
+      // feedback.extra?['feedback_type'].split('.').last
+      // "bugReport"
+      //  feedback.extra?['feedback_type']
+      // "FeedbackType.bugReport"
+      if (feedback.extra != null && feedback.extra.isNotEmpty) {
+          final feedback_type = feedback.extra?['feedback_type'].split('.').last;
+          if (feedback_type == 'bugReport'){labels?.add('bug report');}
+          if (feedback_type == 'featureRequest'){labels?.add('feature request');}
+      }
       response = await httpClient.post(
         uri,
         headers: {
@@ -128,7 +140,7 @@ ${customMarkdown ?? ''}
         body: jsonEncode({
           'title': title,
           'body': body,
-          if (labels != null && labels.isNotEmpty) 'labels': labels,
+          'labels': labels,
           if (assignees != null && assignees.isNotEmpty) 'assignees': assignees,
         }),
       );
