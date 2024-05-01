@@ -10,10 +10,16 @@ First, you will need to add `feedback_github` to your `pubspec.yaml`.
 dependencies:
   flutter:
     sdk: flutter
-  feedback: ^3.0.0
+  feedback: ^3.1.0
   feedback_github:
     git: 
-      url: https://github.com/defuncart/feedback_github/
+      url: https://github.com/Rocke1001feller/feedback_github/
+      ref: main
+dependency_overrides:
+  uuid: ^4.0.0
+  feedback_github:
+    git: 
+      url: https://github.com/Rocke1001feller/feedback_github/
       ref: main
 ```
 
@@ -26,13 +32,14 @@ To show the feedback view just call `BetterFeedback.of(context).show(...);`.
 The callback gets called when the user submits his feedback. 
 
 ```dart
-import 'package:feedback/feedback.dart';
-import 'package:flutter/material.dart';
+import 'package:feedback_github/feedback_github.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(
     BetterFeedback(
-      child: const MyApp(),
+    darkTheme: FeedbackThemeData.dark(),
+      child: MyApp(),
     ),
   );
 }
@@ -46,7 +53,7 @@ BetterFeedback.of(context).showAndUploadToGitHub(
   authToken: 'github_pat_',
   labels: ['feedback'],
   assignees: ['username'],
-  customMarkdown: '**Hello World**',
+  customMarkdown: '**Below are System Info**',
   imageId: Uuid().v4(),
 );
 ```
