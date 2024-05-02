@@ -126,7 +126,7 @@ ${customMarkdown ?? ''}
       // "bugReport"
       //  feedback.extra?['feedback_type']
       // "FeedbackType.bugReport"
-      if (feedback.extra != null && feedback.extra?.isNotEmpty) {//dart 语言学习data['feedback']['comments']?.isNotEmpty ?? false
+      if (feedback.extra != null && feedback.extra?.isNotEmpty ?? false) {//dart 语言学习data['feedback']['comments']?.isNotEmpty ?? false
           final feedback_type = feedback.extra?['feedback_type'].split('.').last;
           if (feedback_type == 'bugReport'){labels?.add('bug report');}
           if (feedback_type == 'featureRequest'){labels?.add('feature request');}
